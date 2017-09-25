@@ -11,17 +11,14 @@ import 'font-awesome/css/font-awesome.css';
 import './styles/global/annotation.scss';
 import './styles/global/index.scss';
 
-import Routes from './Routes.jsx';
+import App from './components/App';
+// import Routes from './Routes.jsx';
 // import Routes from './Routes';
 
 // import './index.scss';
 // import CV from './components/CV';
 
 const WebFontConfig = {
-  // custom: {
-  //   families: 'funsized',
-  //   urls: ['./font.css']
-  // }
   google: {
     families: ['Slackey']
   }
@@ -39,10 +36,10 @@ const render = Component => {
 WebFont.load({
   ...WebFontConfig,
   active() {
-    render(Routes);
+    render(App);
     if (module.hot) {
-      module.hot.accept('./Routes', () => {
-        render(Routes);
+      module.hot.accept('./components/App', () => {
+        render(App);
       });
     }
   }

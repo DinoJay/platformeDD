@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+	<display>Oui</display>
+	<titre>Déchets</titre>
+	<soustitre></soustitre>
+	<descriptiontitre>Objets usagés, emballages, restes de nourriture, ...</descriptiontitre>
+	<description>*Objets usagés, emballages, restes de nourriture, la liste de nos déchets est longue et leur volume considérable. Trop souvent, nous ne nous inquiétons pas de savoir ce qu’ils deviennent une fois notre poubelle vidée. *&#13;
+&#13;
+*En Belgique, de plus en plus, nos déchets ont une seconde vie : ils sont recyclés. En plus de réduire drastiquement la quantité d’ordures qui est mise en décharge, le recyclage permet de transformer nos déchets en ressources nouvelles. *&#13;
+&#13;
+*Que deviennent nos déchets ? Comment sont-ils triés, transformés ou stockés? Qui intervient dans les différents processus ?*&#13;
+&#13;
+*Pour en apprendre un peu plus sur ces questions, naviguez dans les différents chapitres de ce thème et découvrez les travaux des élèves bruxellois qui ont participé au volet scolaire de la plateforme DD.*</description>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/05/DD-dépots-clandestins.jpg</image>
+	<enfants>
+
+	<enfant>Le tri des dechets</enfant><enfant>Zero dechets</enfant><enfant>le gaspillage alimentaire</enfant><enfant>le recyclage</enfant><enfant>la pollution</enfant></enfants>
+	<multimedias>
+
+	</multimedias>
+	<logo></logo>
+	<auteur>INFORSCIENCES</auteur>
+	<sources>Statistics Belgium : http://statbel.fgov.be/fr/statistiques/chiffres/environnement/dechets/emballages/</sources>
+</theme>

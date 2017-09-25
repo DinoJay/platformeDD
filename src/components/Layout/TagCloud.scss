@@ -1,0 +1,41 @@
+@import "../../styles/variables.scss";
+
+.tag {
+  text-align: center;
+  font-family: Meddon, Serif;
+  position: absolute;
+
+  // background: color,
+  // backgroundOpacity: 0.5,
+  box-shadow: 1px 1px 1px grey;
+
+  // span {
+  color: $primBrown;
+  background: white;
+
+  // }
+}
+
+.tag svg {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -100;
+}
+
+.tag :hover {
+  // span {
+  color: white;
+  background: $secBrown;
+
+  // }
+}
+
+.tag span {
+  display: block;
+  vertical-align: middle;
+}
+
+// path {
+//   stroke: $secBrown;
+// }

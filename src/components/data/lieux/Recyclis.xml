@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Recyclis</titre>
+    <type>Partenaire</type>
+	<abstrait>Recyclis :  Visite des élèves de l'athénée Serge Creuz</abstrait>
+	<description>*Cette page est en cours d'écriture par les élèves participant au volet scolaire du programme.*&#13;
+&#13;
+*Pour participer au volet scolaire avec votre classe ou votre école, contactez-nous.*&#13;
+&#13;
+*L'équipe d'INFORSCIENCES*</description>
+	<multimedias>
+
+	<multimedia>https://www.youtube.com/embed/dn1mbh7QG6Q</multimedia></multimedias>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/05/IMG_2654.jpg</image>
+	<adresse>Boulevard de la 2me Armée Britannique 674, 1190 Forest</adresse>
+	<geolocalisation>50.801010, 4.305216</geolocalisation>
+	<site>https://www.recyclis.be/</site>
+	<auteur></auteur>
+</lieu>

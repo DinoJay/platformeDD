@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Institut Frans Fisher</titre>
+    <type>Ecole</type>
+	<abstrait>La plateforme DD avec l'Institut Frans Fisher</abstrait>
+	<description>Une classe de 4è secondaire de l'Institut Frans Fisher a suivi les activités sur **la gestion de déchets**.&#13;
+&#13;
+Premièrement, ils ont participé à **la séance d'introduction &amp;quot;L'échelle du bon sens&amp;quot;** en classe. Puis, ils se sont rendus à l'Expérimentarium de Physique de l'ULB pour y réaliser un **atelier expérimental sur &amp;quot;le tri des poubelles bleues&amp;quot;**. Ensuite, ils ont visité **Recyclis**, le centre de collecte et de tri des poubelles bleues et jaunes de Bruxelles et **Bru-compost** le centre de compostage de Bruxelles-Propreté. Finalement, ils ont pris part à **la séance de conclusion et de réflexion** en classe. &#13;
+&#13;
+Ci-contre, une photo d'un groupe scolaire à Recyclis.</description>
+	<multimedias>
+
+	</multimedias>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/06/Plateforme-DD-Visite-à-Recyclis-Panneau-dentrée.jpg</image>
+	<adresse>Rue Général Eenens 66, 1030 Schaerbeek</adresse>
+	<geolocalisation>50.868878, 4.377695</geolocalisation>
+	<site>http://www.fransfischer.net/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

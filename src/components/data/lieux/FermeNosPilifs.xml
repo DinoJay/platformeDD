@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Ferme Nos Pilifs</titre>
+    <type>Partenaire</type>
+	<abstrait>Entreprise de travail adapté comprenant une boulangerie, une épicerie, des production en permaculture et agroforesterie</abstrait>
+	<description>*Cette page est en cours d'écriture par les élèves participant au volet scolaire du programme.*&#13;
+&#13;
+*Pour participer au volet scolaire avec votre classe ou votre école, contactez-nous.*&#13;
+&#13;
+*L'équipe d'INFORSCIENCES*</description>
+	<multimedias>
+
+	<multimedia>https://www.youtube.com/embed/kJgbzBGJo48</multimedia></multimedias>
+	<image>http://www.fermenospilifs.be/wp-content/themes/twentytwelve/img/logo.png</image>
+	<adresse>Trassersweg 347, 1120 Brussel</adresse>
+	<geolocalisation>50.904452, 4.388755</geolocalisation>
+	<site>http://www.fermenospilifs.be/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

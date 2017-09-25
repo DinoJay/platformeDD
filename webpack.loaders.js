@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = [
   {
     enforce: 'pre',
@@ -56,5 +54,10 @@ module.exports = [
     test: /\.json/,
     exclude: /(node_modules|bower_components)/,
     loader: 'json-loader'
+  },
+  {
+    test: /\.xml/,
+    exclude: /(node_modules|bower_components)/,
+    loader: 'xml-loader'
   }
 ];

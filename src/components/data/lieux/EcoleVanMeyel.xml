@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Ecole Van Meyel</titre>
+    <type>Ecole</type>
+	<abstrait>La plateforme DD avec l'Ecole Van Meyel</abstrait>
+	<description>Deux classes de 6è primaire de l'Ecole Van Meyel ont participé aux activités sur **l'alimentation**.&#13;
+&#13;
+Tout d'abord, elles ont pris part à **la séance d'introduction &amp;quot;de l'assiette au système alimentaire&amp;quot;** en classe. Ensuite, toujours en classe, elles ont réalisé **l'atelier expérimental &amp;quot;les sciences par le pain&amp;quot;**. Puis, elles ont visité ** la Ferme Nos Pilifs**. Pour finir, elles ont participé à **la séance de conclusion et de réflexion** en classe.&#13;
+&#13;
+Ci-contre, une photo de l'épouvantail de la parcelle d'agroforesterie de la Ferme Nos Pilifs.</description>
+	<multimedias>
+
+	</multimedias>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/06/IMG_1047.jpg</image>
+	<adresse>Avenue Georges Henri 224, 1200 Bruxelles</adresse>
+	<geolocalisation>50.844397, 4.414298</geolocalisation>
+	<site>http://www.ecolevanmeyel.be/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>La Fonderie</titre>
+    <type>Partenaire</type>
+	<abstrait>Le Musée bruxellois de l'industrie et du travail</abstrait>
+	<description>Le Musée de La Fonderie conserve d’importantes collections de machines et d’outillages et d’importantes archives sur différents supports. Il ne présente pas d’expositions permanentes, mais des expositions temporaires.&#13;
+&#13;
+Il est l’émanation de La Fonderie - Centre d’Histoire Économique et Sociale de la Région Bruxelloise, qui propose un centre de documentation et de recherche, des publications, ainsi que des parcours découvertes urbains et portuaires de l’histoire industrielle de Bruxelles.&#13;
+&#13;
+Source : Wikipedia</description>
+	<multimedias>
+
+	</multimedias>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/06/DD-La-fonderie.gif</image>
+	<adresse>Rue Ransfort 27, Bruxelles 1080</adresse>
+	<geolocalisation>50.852853, 4.336865</geolocalisation>
+	<site>https://www.lafonderie.be/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+	<display>Oui</display>
+	<titre>Alimentation</titre>
+	<soustitre></soustitre>
+	<descriptiontitre>Que mange-t-on ?</descriptiontitre>
+	<description>Besoin essentiel pour la survie de chacun, notre nourriture est également déterminante pour notre santé. C’est tout sauf le hasard qui a fait de l’alimentation le premier thème choisi pour être traité dans le cadre de cette opération.&#13;
+&#13;
+**Savons-nous comment notre nourriture est produite, transformée, distribuée ? Avons-nous une idée de ce dont notre alimentation est constituée ? **&#13;
+&#13;
+Nous avons la chance de vivre dans une région du monde où l’écrasante majorité de la population a accès à une quantité suffisante de nourriture. Cette chance est loin d’être partagée par tous les habitants de notre planète et, même dans notre pays, de grandes disparités subsistent. &#13;
+&#13;
+Pour en apprendre un peu plus sur ces questions, naviguez dans les différents chapitres de ce thème et découvrez les travaux des élèves bruxellois qui ont participé au volet scolaire de la plateforme DD.</description>
+	<image>https://upload.wikimedia.org/wikipedia/commons/a/a0/Tractors_in_Potato_Field.jpg</image>
+	<enfants>
+
+	<enfant>l'agriculture</enfant><enfant>la filiere alimentaire</enfant><enfant>la transformation alimentaire</enfant><enfant>l'assiette</enfant></enfants>
+	<multimedias>
+
+	</multimedias>
+	<logo></logo>
+	<auteur>INFORSCIENCES</auteur>
+	<sources></sources>
+</theme>

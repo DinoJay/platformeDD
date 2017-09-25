@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Ferme du Chant des Cailles</titre>
+    <type>Partenaire</type>
+	<abstrait>Projet d'agriculture urbaine, participative et écologique à Watermael-Boitsfort</abstrait>
+	<description>*Cette page est en cours d'écriture par les élèves participant au volet scolaire du programme.*&#13;
+&#13;
+*Pour participer au volet scolaire avec votre classe ou votre école, contactez-nous.*&#13;
+&#13;
+*L'équipe d'INFORSCIENCES*</description>
+	<multimedias>
+
+	<multimedia>https://upload.wikimedia.org/wikipedia/commons/7/72/Huy,_koeltorens_2007-05-01_14.57.JPG</multimedia></multimedias>
+	<image>http://www.chantdescailles.be/wp-content/uploads/2014/06/Portes-ouvertes-Chant-des-Cailles-2015-720x380-1441741817.jpg</image>
+	<adresse>Avenue des Cailles, 1170 Watermael-Boitsfort</adresse>
+	<geolocalisation>50.806768, 4.417786</geolocalisation>
+	<site>http://www.chantdescailles.be/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

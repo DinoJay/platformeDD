@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lieu>
+	<display>Oui</display>
+	<titre>Ecole Decroly</titre>
+    <type>Ecole</type>
+	<abstrait>La plateforme DD avec l'école Decoly</abstrait>
+	<description>Lors de cette première édition de la Plateforme DD, deux classes de 2è secondaire de l'école Decroly ont participé aux activités concernant **l'alimentation**.&#13;
+&#13;
+Tout d'abord, **la séance d'introduction &amp;quot;de l'assiette au système alimentaire&amp;quot;** a été réalisée en classe. Ensuite, elles ont participé à **l'atelier expérimental &amp;quot;Analyse des réserves végétales&amp;quot;** à l'ULB. Puis, elles ont visité la **Ferme du Chant des Cailles**. Pour finir, elles ont clôturé leur parcours par **la séance de conclusion et de réflexion** en classe.&#13;
+&#13;
+Ci-contre, une photo de plates bandes de la ferme du Chant des Cailles.</description>
+	<multimedias>
+
+	</multimedias>
+	<image>http://sciences.ulb.ac.be/wp-content/uploads/2017/06/IMG_1106.jpg</image>
+	<adresse>Drève des Gendarmes 45, 1180 Uccle</adresse>
+	<geolocalisation>50.797345, 4.379132</geolocalisation>
+	<site>http://www.ecoledecroly.be/</site>
+	<auteur>Inforsciences</auteur>
+</lieu>

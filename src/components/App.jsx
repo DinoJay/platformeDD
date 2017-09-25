@@ -3,6 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './App.scss';
 
+import rawData from './data/sujets/data.xml';
+
+const realData = rawData.data.sujet;
+console.log('realData', realData);
+
+import Layout from './Layout';
+
 class App extends React.Component {
   static propTypes() {
     return {
@@ -15,8 +22,9 @@ class App extends React.Component {
     const { width, height } = props;
 
     this.state = {
-      width,
-      height
+      width: 1200,
+      height: 1000,
+      data: realData
     };
   }
 
@@ -31,8 +39,15 @@ class App extends React.Component {
   // }
 
   render() {
+    const { data, width, height } = this.state;
+    console.log('data entry', data);
     return (
-      <div className={`container ${styles.mainCont} ${styles.extraMargin}`} />
+      <div className={`container ${styles.main}`}>
+        <h1>Platforme DD - Articles </h1>
+        <div>
+          <Layout data={data} />
+        </div>
+      </div>
     );
   }
 }
