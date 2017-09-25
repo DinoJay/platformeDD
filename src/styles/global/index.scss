@@ -1,0 +1,30 @@
+@import "../variables.scss";
+
+svg {
+  overflow: visible !important;
+}
+
+// path {
+//   stroke: $secBrown;
+//   fill: none;
+// }
+
+// svg * {
+//   stroke: black;
+// }
+
+// path {
+//   fill-opacity: .1;
+//   stroke-opacity: 1;
+//   fill: none
+// }
+
+body {
+  background: #b17c51 url(./bg.jpg);
+}
+
+p {
+  font-family: "Meddon", serif;
+  color: $primBrown;
+  font-style: italic;
+}
