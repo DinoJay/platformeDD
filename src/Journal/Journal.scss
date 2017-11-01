@@ -1,0 +1,19 @@
+body {
+  background: lightgrey;
+}
+
+.main {
+  background: white;
+}
+
+.grid {
+  display: grid;
+  height: 100%;
+}
+
+.cell {
+  position: relative;
+  border: solid black 1px;
+  overflow: hidden;
+  height: 100%;
+}

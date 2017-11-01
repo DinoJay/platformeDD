@@ -11,7 +11,7 @@ import 'font-awesome/css/font-awesome.css';
 import './styles/global/annotation.scss';
 import './styles/global/index.scss';
 
-import App from './components/App';
+import Store from './Store';
 // import Routes from './Routes.jsx';
 // import Routes from './Routes';
 
@@ -33,18 +33,24 @@ const render = Component => {
   );
 };
 
-WebFont.load({
-  ...WebFontConfig,
-  active() {
-    render(App);
-    if (module.hot) {
-      module.hot.accept('./components/App', () => {
-        render(App);
-      });
-    }
-  }
-});
+// WebFont.load({
+//   ...WebFontConfig,
+//   active() {
+//     render(Store);
+//     if (module.hot) {
+//       module.hot.accept('./components/Store', () => {
+//         render(Store);
+//       });
+//     }
+//   }
+// });
 
+render(Store);
+if (module.hot) {
+  module.hot.accept('./Store', () => {
+    render(Store);
+  });
+}
 // render(Routes);
 // if (module.hot) {
 //   module.hot.accept('./Routes', () => {

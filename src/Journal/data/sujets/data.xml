@@ -443,7 +443,7 @@
       <parent>les déchets dans la nature</parent>
     </parents>
     <enfants>
-      <enfant>Réduire la pollution atmosphérique</enfant>
+      <enfant>la pollution atmosphérique</enfant>
       <enfant>l'impact des voitures</enfant>
     </enfants>
     <entrants></entrants>
@@ -709,7 +709,6 @@
     <parents>
       <parent>la consommation d'eau</parent>
       <parent>la consommation d'énergétique</parent>
-      <parent>la consommation d’eau</parent>
     </parents>
     <enfants></enfants>
     <entrants>
@@ -760,7 +759,7 @@
     <description />
     <parents>
       <parent>Réduire sa consommation</parent>
-      <parent>Réduire la pollution atmosphérique</parent>
+      <parent>la pollution atmosphérique</parent>
     </parents>
     <enfants></enfants>
     <entrants></entrants>
@@ -1025,7 +1024,7 @@
     </enfants>
     <entrants>
       <entrant>Le tri par densite</entrant>
-      <entrant>Le tri des déchets</entrant>
+      <entrant>le tri des déchets</entrant>
     </entrants>
     <sortants></sortants>
     <lieux></lieux>
@@ -1657,7 +1656,7 @@
     <description />
     <parents>
       <parent>Réduire sa consommation</parent>
-      <parent>Réduire la pollution atmosphérique</parent>
+      <parent>la pollution atmosphérique</parent>
     </parents>
     <enfants></enfants>
     <entrants></entrants>
@@ -1693,7 +1692,7 @@
     au cours de cette opération.*</abstrait>
     <description></description>
     <parents>
-      <parent>Déchets</parent>
+      <parent>Dechets</parent>
     </parents>
     <enfants>
       <enfant>Le tri par densite</enfant>
@@ -1757,7 +1756,7 @@
     bouteilles &amp;quot;</abstrait>
     <description></description>
     <parents>
-      <parent>Le tri des déchets</parent>
+      <parent>le tri des déchets</parent>
     </parents>
     <enfants></enfants>
     <entrants></entrants>
@@ -2263,7 +2262,7 @@
     WYNGAERDEN &amp;quot;</abstrait>
     <description />
     <parents>
-      <parent>Réduire la pollution atmosphérique</parent>
+      <parent>la pollution atmosphérique</parent>
       <parent>Réduire sa consommation</parent>
     </parents>
     <enfants></enfants>

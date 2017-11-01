@@ -1,0 +1,107 @@
+<themes>
+  <theme>
+    <display>Oui</display>
+    <titre>Alimentation</titre>
+    <soustitre></soustitre>
+    <descriptiontitre>Que mange-t-on ?</descriptiontitre>
+    <description>Besoin essentiel pour la survie de chacun, notre
+    nourriture est également déterminante pour notre santé. C’est
+    tout sauf le hasard qui a fait de l’alimentation le premier
+    thème choisi pour être traité dans le cadre de cette opération.
+    **Savons-nous comment notre nourriture est produite,
+    transformée, distribuée ? Avons-nous une idée de ce dont notre
+    alimentation est constituée ? ** Nous avons la chance de vivre
+    dans une région du monde où l’écrasante majorité de la
+    population a accès à une quantité suffisante de nourriture.
+    Cette chance est loin d’être partagée par tous les habitants de
+    notre planète et, même dans notre pays, de grandes disparités
+    subsistent. Pour en apprendre un peu plus sur ces questions,
+    naviguez dans les différents chapitres de ce thème et découvrez
+    les travaux des élèves bruxellois qui ont participé au volet
+    scolaire de la plateforme DD.</description>
+    <image>
+    https://upload.wikimedia.org/wikipedia/commons/a/a0/Tractors_in_Potato_Field.jpg</image>
+    <enfants>
+      <enfant>l'agriculture</enfant>
+      <enfant>la filiere alimentaire</enfant>
+      <enfant>la transformation alimentaire</enfant>
+      <enfant>l'assiette</enfant>
+    </enfants>
+    <multimedias></multimedias>
+    <logo></logo>
+    <auteur>INFORSCIENCES</auteur>
+    <sources></sources>
+  </theme>
+  <theme>
+    <display>oui</display>
+    <titre>Dechets</titre>
+    <soustitre></soustitre>
+    <descriptiontitre>objets usagés, emballages, restes de
+    nourriture, ...</descriptiontitre>
+    <description>*objets usagés, emballages, restes de nourriture,
+    la liste de nos déchets est longue et leur volume considérable.
+    trop souvent, nous ne nous inquiétons pas de savoir ce qu’ils
+    deviennent une fois notre poubelle vidée. * *en belgique, de
+    plus en plus, nos déchets ont une seconde vie : ils sont
+    recyclés. en plus de réduire drastiquement la quantité
+    d’ordures qui est mise en décharge, le recyclage permet de
+    transformer nos déchets en ressources nouvelles. * *que
+    deviennent nos déchets ? comment sont-ils triés, transformés ou
+    stockés? qui intervient dans les différents processus ?* *pour
+    en apprendre un peu plus sur ces questions, naviguez dans les
+    différents chapitres de ce thème et découvrez les travaux des
+    élèves bruxellois qui ont participé au volet scolaire de la
+    plateforme dd.*</description>
+    <image>
+    http://sciences.ulb.ac.be/wp-content/uploads/2017/05/dd-dépots-clandestins.jpg</image>
+    <enfants>
+      <enfant>le tri des déchets</enfant>
+      <enfant>zero dechets</enfant>
+      <enfant>le gaspillage alimentaire</enfant>
+      <enfant>le recyclage</enfant>
+      <enfant>la pollution</enfant>
+      <enfant>les déchets dans la nature</enfant>
+    </enfants>
+    <multimedias></multimedias>
+    <logo></logo>
+    <auteur>inforsciences</auteur>
+    <sources>statistics belgium :
+    http://statbel.fgov.be/fr/statistiques/chiffres/environnement/dechets/emballages/</sources>
+  </theme>
+  <theme>
+    <display>Oui</display>
+    <titre>Energie</titre>
+    <soustitre></soustitre>
+    <descriptiontitre>L'énergie</descriptiontitre>
+    <description>*Suite aux activités réalisées, les élèves du
+    Collège Saint-Hubert ont rédigé plusieurs sujets traitant de
+    l'énergie au quotidien* *** &amp;quot;L’énergie, voilà une
+    chose omniprésente dans notre vie quotidienne. Un système
+    possède de l’énergie lorsqu’il est capable de provoquer un
+    mouvement, d'élever une température, … Lorsque l’on pense à
+    énergie, les premiers mots qui nous viennent à l’esprit sont :
+    l’électricité, le mouvement, le chauffage. Diane Bilgischer –
+    Tessa Rouvez – Juliette Hubert&amp;quot;</description>
+    <image>
+    http://sciences.ulb.ac.be/wp-content/uploads/2017/05/Pokemon.png</image>
+    <enfants>
+      <enfant>les formes d'énergie</enfant>
+      <enfant>la production énergétique</enfant>
+      <enfant>la distribution de l'électricité</enfant>
+      <enfant>les panneaux photovoltaiques</enfant>
+      <enfant>les énergies renouvelables</enfant>
+      <enfant>la consommation d'énergétique</enfant>
+      <enfant>la consommation d'eau</enfant>
+      <enfant>Réduire sa consommation</enfant>
+      <enfant>la pollution atmosphérique</enfant>
+      <enfant>les panneaux solaires</enfant>
+      <enfant>la maison passive</enfant>
+      <enfant>les centrales nucléaires</enfant>
+    </enfants>
+    <multimedias></multimedias>
+    <logo></logo>
+    <auteur>les élèves de 2ème secondaire A du Collège Saint-Hubert
+    de Watermael-Boisfort</auteur>
+    <sources></sources>
+  </theme>
+</themes>

@@ -6,20 +6,14 @@ import _ from 'lodash';
 import ReactDom from 'react-dom';
 import sketchy from '../utils/d3.sketchy';
 
-import styles from './TagCloud.scss';
+import cx from './index.scss';
 
-import {
-  primBrown,
-  secBrown,
-  thirdBrown
-} from '!!sass-variable-loader!../../styles/variables.scss';
-
-// import stampStyle from '../styles/stamp.scss';
-// import postcardStyle from '../styles/postcard.scss';
+// import stampStyle from '../cx/stamp.scss';
+// import postcardStyle from '../cx/postcard.scss';
 // import sets from './tagGraph';
 // import rawBookmarks from './diigo.json';
 
-// import iconStyle from './styles/fileicon.css';
+// import iconStyle from './cx/fileicon.css';
 
 // import iconBackground from './icon-file.png';
 
@@ -28,7 +22,7 @@ import {
 // }
 const ratio = 4;
 
-function autoSizeText(container, attempts = 200) {
+function autoSizeText(container, pad = 1, attempts = 200) {
   const setChildrenToInheritFontSize = el => {
     el.style.fontSize = 'inherit';
     _.each(el.children, child => {
@@ -46,7 +40,7 @@ function autoSizeText(container, attempts = 200) {
     ) {
       elNewFontSize = '140px'; // largest font to start with
     } else {
-      elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -2)) - 1}px`;
+      elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -2)) - pad}px`;
     }
     el.style.fontSize = elNewFontSize;
 
@@ -73,29 +67,43 @@ class Tag extends React.Component {
       top: React.PropTypes.number.isRequired
     };
   }
+  constructor(props) {
+    super(props);
+    this.update = this.update.bind(this);
+  }
 
   componentDidMount() {
+    // this.update();
+  }
+
+  componentDidUpdate() {
+    this.update();
+  }
+
+  update() {
     // this.componentDidUpdate.bind(this)();
-    const { width, height, color } = this.props;
+    const { width, height, color, pad } = this.props;
     const node = ReactDom.findDOMNode(this);
     // console.log('node', node);
-    autoSizeText(node, 200);
+    autoSizeText(node, pad);
     d3
       .select(this.svg)
       .selectAll('*')
       .remove();
+
     const paths = sketchy
       .rectStroke({
         svg: d3.select(this.svg),
         x: 0,
         y: 0,
         width,
-        height,
+        height: height - pad,
         density: 0,
         sketch: 1
       })
       .selectAll('path')
-      .attr('stroke', secBrown);
+      .attr('stroke', color)
+      .attr('stroke-width', '2');
   }
 
   render() {
@@ -107,27 +115,22 @@ class Tag extends React.Component {
       children,
       color,
       fill,
+      pad,
       onClick
     } = this.props;
 
-    const pad = 0;
+    // const p = <rect stroke={color} width={width} height={height} />;
     const st = {
       left: `${Math.round(left)}px`,
       top: `${Math.round(top)}px`,
       width: `${width}px`,
-      height: `${height}px`
+      height: `${height - pad}px`
       // border: 'black groove',
       // borderRadius: '10%',
     };
     return (
-      <div className={styles.tag} style={st} onClick={() => onClick(children)}>
-        <span
-          style={{
-            lineHeight: `${height - pad}px`
-          }}
-        >
-          {children}
-        </span>
+      <div className={cx.tag} style={st} onClick={() => onClick(children)}>
+        <span style={{ lineHeight: `${height - pad}px` }}>{children}</span>
         <svg
           ref={svg => (this.svg = svg)}
           style={{
@@ -143,6 +146,7 @@ class Tag extends React.Component {
 Tag.defaultProps = {
   left: 0,
   top: 0,
+  pad: 10,
   width: 0,
   height: 0,
   children: 0,
@@ -159,14 +163,18 @@ function makeTreemap({ data, width, height, padX, padY }) {
     .round(true)
     .tile(d3.treemapSquarify.ratio(1));
 
+  // data.forEach(d => (d.count = d.values.length));
+
   const size = d3
     .scaleLinear()
     .domain(d3.extent(data, d => d.count))
     .range([20, 50]);
 
   const first = { name: 'root', children: data };
+  // console.log('root data', data);
   const root = d3.hierarchy(first).sum(d => size(d.count));
   treemap(root);
+  root.children = root.children || [];
   root.children.forEach(d => {
     // d.x0 += padX / 2;
     // d.x1 -= padX / 2;
@@ -205,61 +213,32 @@ class TagCloud extends React.Component {
     };
   }
 
+  // shouldComponentUpdate() {
+  //   return false;
+  // }
+
   componentWillReceiveProps(nextProps) {
     const data = nextProps.data.sort((a, b) => b.count - a.count);
     const { width, height, padX, padY } = nextProps;
-    if (nextProps.data.length !== this.props.data.length) {
-      this.setState({
-        data,
-        root: makeTreemap({ data, width: width / ratio, height, padX, padY })
-      });
-    }
+    // if (nextProps.data.length !== this.props.data.length) {
+    this.setState({
+      data,
+      root: makeTreemap({ data, width: width / ratio, height, padX, padY })
+    });
+    // }
   }
 
-  componentDidUpdate() {
-    this.props.getCoords(this.state.root.children);
-  }
+  // componentDidUpdate() {
+  //   this.props.getCoords(this.state.root.children);
+  // }
 
   render() {
     const { width, height, color, clickHandler } = this.props;
     console.log('render', this.props, this.state);
     const { data, root } = this.state;
-    // const fontSize = d3
-    //   .scaleLinear()
-    //   .domain(d3.extent(data, d => d.values.length))
-    //   .range([15, 50]);
-
-    // console.log('nodes', nodes);
-    // const style = {
-    //   // position: 'absolute',
-    //   // background: 'blue'
-    //   // borderRadius: '50%',
-    //   // backgroundImage: `url("${iconBackground}")`
-    //   borderRadius: '2px',
-    //   display: 'inline',
-    //   border: 'black solid',
-    //   // margin: '20px',
-    //   // marginRight: '5px',
-    //   // marginTop: '20px',
-    //   // marginBottom: '20px',
-    //   fontFamily: 'Slackey'
-    //   // fontWeight: 'bold'
-    // };
-    // const Words = data.map(d =>
-    //   (<div
-    //     style={{
-    //       fontSize: fontSize(d.values.length),
-    //       background: color(d.key),
-    //       ...style
-    //     }}
-    //     onClick={() => console.log(d)}
-    //   >
-    //     {`${d.key} `}
-    //   </div>)
-    // );
 
     const treemap = root.children.map(d => (
-      <Tag {...d} color={color(d.data.key)} onClick={clickHandler}>
+      <Tag {...d} color={color(d.data.theme)} onClick={clickHandler}>
         {d.data.key}
       </Tag>
     ));

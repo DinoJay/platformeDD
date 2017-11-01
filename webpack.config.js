@@ -3,7 +3,7 @@ const path = require('path');
 const loaders = require('./webpack.loaders');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const HOST = process.env.HOST || '127.0.0.1';
+const HOST = process.env.HOST || '127.0.0.2';
 const PORT = process.env.PORT || '8888';
 
 loaders.push(
@@ -73,6 +73,8 @@ loaders.push(
 module.exports = {
   entry: [
     'react-hot-loader/patch',
+    `webpack-dev-server/client?http://${HOST}:${PORT}`,
+    'webpack/hot/only-dev-server',
     './src/index.jsx' // your app's entry point
   ],
   devtool: process.env.WEBPACK_DEVTOOL || 'source-map',
@@ -107,6 +109,7 @@ module.exports = {
     // }
   },
   plugins: [
+    new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
