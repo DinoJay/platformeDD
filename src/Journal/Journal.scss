@@ -1,5 +1,9 @@
+$borderColor: #85A0A4;
+
 body {
-  background: lightgrey;
+  background: url(./lined_paper.png) repeat top left fixed;
+  background-position-y: 10px;
+  font-family: 'Sorts Mill Goudy', serif;
 }
 
 .main {
@@ -9,11 +13,30 @@ body {
 .grid {
   display: grid;
   height: 100%;
+  grid-gap: 10px;
 }
 
 .cell {
   position: relative;
-  border: solid black 1px;
-  overflow: hidden;
+  border: thin solid $borderColor;
   height: 100%;
+
+  .control {
+    border: 2px solid $borderColor;
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    left: 25px;
+    top: -30px;
+    background: url(./lined_paper.png) repeat top left fixed;
+    z-index: 10;
+    border-radius: 50%;
+
+    span {
+      font-size: 60px;
+      line-height: 60px;
+    }
+  }
+
+  // grid-column-end: span 2;
 }

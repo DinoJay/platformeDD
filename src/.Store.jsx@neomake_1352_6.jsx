@@ -65,48 +65,39 @@ function prepareData() {
 
 const data = prepareData().slice(0, 1000);
 const tagMapData = data.slice(0, 1000);
-const nestByTime = (docs, d3time = d3.timeMonth, minSetSize = 2) =>
-  d3
-    .nest()
-    .key(d => d3time(d.date))
-    .entries(docs)
-    .map((d, i) => {
-      d.id = i;
-      d.minDate = d3.min(d.values, e => e.date);
-      d.maxDate = d3.max(d.values, e => e.date);
-      d.sets = setify(d.values).filter(e => e.values.length > minSetSize);
-      return d;
-    })
-    .sort((a, b) => a.minDate - b.minDate);
+const timelineData = d3
+  .nest()
+  .key(d => d3.timeMonth(d.date))
+  .entries(data)
+  .map((d, i) => {
+    d.id = i;
+    d.minDate = d3.min(d.values, e => e.date);
+    d.maxDate = d3.max(d.values, e => e.date);
+    return d;
+  })
+  .map(d => {
+    d.sets = setify(d.values).filter(e => e.values.length > 1);
+    return d;
+  })
+  .sort((a, b) => a.minDate - b.minDate);
 
-const chunkData = (docs, limit = 40) =>
-  chunkArray(docs, limit)
-    .map((a, i) => {
-      const minDate = d3.min(a, e => e.date);
-      const maxDate = d3.max(a, e => e.date);
-      const d = {
-        id: i,
-        minDate,
-        maxDate,
-        key: `${minDate} - ${maxDate}`,
-        sets: setify(a).filter(e => e.values.length > 1),
-        values: a
-      };
-      return d;
-    })
-    .sort((a, b) => a.minDate - b.maxDate);
-
-const timelineData = nestByTime(data, d3.timeMonth); // chunkData(data, 40);
-
-const sets = setify(data);
-const tagCloudSets = setify(data).filter(d => d.values.length > 6);
+const sets = setify(data).filter(d => d.values.length > 2);
 const setKeys = sets.map(d => d.key);
 
-const tagMapSets = sets.filter(d => d.values.length > 0);
+// const setKeys = sets.map(d => d.key).slice(0, 10);
+// console.log('setKeys: ', setKeys);
+//
+// data.forEach(d => {
+//   d.tags = _.intersection(d.tags, setKeys);
+//   return d;
+// });
+// console.log('nd: ', nd);
+
+const tagMapSets = sets.filter(d => d.values.length > 4);
 
 data.forEach((d, i) => {
-  // const overlap = _.intersection(d.tags, setKeys.slice(0, 100));
-  // d.tags = overlap.length === 0 ? ['other'] : overlap;
+  const overlap = _.intersection(d.tags, setKeys);
+  d.tags = overlap.length === 0 ? ['other'] : overlap;
   d.id = i;
 });
 
@@ -129,8 +120,6 @@ const defaultState = {
   // tagCloudConf: {
   tagCloudWidth: 800,
   tagCloudHeight: 800,
-  tagCloudSets,
-
   width: 1000,
   height: 1000
   // sets: [],

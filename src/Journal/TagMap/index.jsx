@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 
 // import TSNE from 'tsne-js';
 // import { bboxCollide } from '../utils/helper';
-import tpStyle from './tooltip.scss';
+import cx from './index.scss';
 
 import { bboxCollide } from 'd3-bboxCollide';
 import { forceSurface } from 'd3-force-surface';
@@ -319,7 +319,7 @@ class TagMap extends Component {
     //   height
     // );
 
-    const pad = 10;
+    const pad = 5;
     const sim = d3
       .forceSimulation(nextNodes)
       .force(
@@ -334,12 +334,12 @@ class TagMap extends Component {
         d3
           .forceCollide()
           .radius(docHeight / 2 + pad)
-          .strength(1)
+          .strength(0.1)
       )
       // .force('charge', d3.forceManyBody())
       // .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('X', d3.forceX(d => d[attr].x).strength(0.5))
-      .force('Y', d3.forceY(d => d[attr].y).strength(0.5))
+      .force('X', d3.forceX(d => d[attr].x).strength(1))
+      .force('Y', d3.forceY(d => d[attr].y).strength(1))
       .force(
         'container',
         forceSurface()
@@ -381,64 +381,10 @@ class TagMap extends Component {
       sets,
       links,
       transform,
-      zoomHandler
+      zoomHandler,
+      bubbleRadius,
+      hoverHandler
     } = this.props;
-
-    const style = {
-      position: 'absolute',
-      // background: 'blue'
-      width: `${docWidth}px`,
-      height: `${docHeight}px`
-      // borderRadius: '50%',
-      // backgroundImage: `url("${iconBackground}")`
-    };
-
-    const docRender = d => ({ left, top }) => (
-      <div key={d.id} style={{ ...style, left: `${left}px`, top: `${top}px` }}>
-        <div className={tpStyle.tooltip}>
-          <div
-            style={{
-              width: `${docHeight}px`,
-              height: `${docWidth}px`,
-              overflow: 'hidden',
-              fontSize: '2px',
-              border: '1px solid black'
-            }}
-            onClick={() => zoomHandler({ top, left, docWidth, docHeight })}
-          >
-            {d.title}
-            <span className={tpStyle.tooltiptext}>{d.tags.join(',')}</span>
-          </div>
-        </div>
-      </div>
-    );
-
-    // const pathRender = ({ sx, sy, tx, ty }) => (
-    //   <path
-    //     style={{ stroke: 'grey', strokeWidth: '2px' }}
-    //     markerEnd="url(#arrow)"
-    //     d={d3.line()([[sx + docWidth, sy + docHeight], [tx + docWidth, ty]])}
-    //   />
-    // );
-
-    // const linkPaths = links.map(l => (
-    //   <Motion
-    //     defaultStyle={{
-    //       sx: width / 2,
-    //       sy: height / 2,
-    //       tx: width / 2,
-    //       ty: height / 2
-    //     }}
-    //     style={{
-    //       sx: spring(l.source.x),
-    //       sy: spring(l.source.y),
-    //       tx: spring(l.target.x),
-    //       ty: spring(l.target.y)
-    //     }}
-    //   >
-    //     {pathRender}
-    //   </Motion>
-    // ));
 
     const Docs = nodes.map(d => (
       <Motion
@@ -448,19 +394,47 @@ class TagMap extends Component {
           top: spring(d.y)
         }}
       >
-        {docRender(d)}
+        {({ left, top }) => (
+          <div
+            key={d.id}
+            onMouseOver={() => hoverHandler({ left, top, doc: d })}
+            onMouseOut={() => hoverHandler(null)}
+            style={{
+              position: 'absolute',
+              left: `${left - docWidth / 2}px`,
+              top: `${top - docHeight / 2}px`
+            }}
+          >
+            <div
+              style={{
+                width: `${docHeight}px`,
+                height: `${docWidth}px`,
+                overflow: 'hidden',
+                fontSize: '2px',
+                // opacity: '0.4',
+                border: '.1px solid grey'
+              }}
+              onClick={() => zoomHandler({ top, left, docWidth, docHeight })}
+            >
+              <div style={{ padding: '1px', height: '100%' }}>
+                <div
+                  style={{
+                    opacity: '0.6',
+                    background: 'white',
+                    overflow: 'hidden',
+                    height: '100%'
+                  }}
+                >
+                  <span style={{ pointerEvents: 'none' }}>{d.title}</span>
+                </div>
+              </div>
+            </div>
+            {/* </div> */}
+          </div>
+        )}
       </Motion>
     ));
 
-    const bubbleRender = s => ({ left, top }) => (
-      <circle
-        fill={color(s.key)}
-        // opacity={0.9}
-        r={docWidth}
-        cx={left}
-        cy={top}
-      />
-    );
     const Bubbles = sets.map(s => (
       <g key={s.id} style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}>
         {s.values.map(d => {
@@ -469,11 +443,20 @@ class TagMap extends Component {
             <Motion
               defaultStyle={{ left: width / 2, top: height / 2 }}
               style={{
-                left: spring(n.x + docWidth / 2),
-                top: spring(n.y + docHeight / 2)
+                left: spring(n.x),
+                top: spring(n.y)
               }}
             >
-              {bubbleRender(s)}
+              {({ left, top }) => (
+                <rect
+                  fill={color(s.key)}
+                  // opacity={0.9}
+                  width={bubbleRadius}
+                  height={bubbleRadius}
+                  x={left - docHeight / 2}
+                  y={top - docHeight / 2}
+                />
+              )}
             </Motion>
           );
         })}
@@ -497,14 +480,14 @@ class TagMap extends Component {
               <filter id={`gooeyCodeFilter-${s.key}`}>
                 <feGaussianBlur
                   in="SourceGraphic"
-                  stdDeviation="10"
+                  stdDeviation="5"
                   colorInterpolationFilters="sRGB"
                   result="blur"
                 />
                 <feColorMatrix
                   in="blur"
-                  mode="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+                  type="saturate"
+                  values={`1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${bubbleRadius} -6`}
                   result="gooey"
                 />
               </filter>
@@ -545,7 +528,8 @@ TagMap.defaultProps = {
   docHeight: 16,
   width: 400,
   height: 300,
-  attr: 'cola'
+  attr: 'cola',
+  bubbleRadius: 10
 };
 
 class Wrapper extends Component {
@@ -556,14 +540,16 @@ class Wrapper extends Component {
   //
   constructor(props) {
     super(props);
-    const { width, height } = props;
-    const k = -10;
+    // const { width, height } = props;
     this.state = {
-      transform: `translate(${width / 2 - width / 2 * k}, ${height / 2 -
-        height / 2 * k})`
+      transform: null,
+      tooltip: null
     };
   }
 
+  componentWillReceiveProps() {
+    this.setState({ transform: null });
+  }
   // componentDidMount() {
   //   const el = ReactDOM.findDOMNode(this);
   //   const width = el.offsetWidth;
@@ -575,7 +561,7 @@ class Wrapper extends Component {
 
   render() {
     // const { width, height } = this.props;
-    const { transform } = this.state;
+    const { transform, tooltip } = this.state;
     const { width, height } = this.props;
     // const { x, y, k } = transform;
 
@@ -589,25 +575,41 @@ class Wrapper extends Component {
     // };
     //
     return (
-      <div
-        style={{
-          transform,
-          transformOrigin: 'left top',
-          transition: '0.5s ease-in-out'
-        }}
-      >
-        <TagMap
-          {...this.props}
-          width={width}
-          height={height}
-          zoomHandler={({ top, left, docHeight, docWidth }) => {
-            const k = 8;
-            const translate = `translate(${width / 2 -
-              (left + docWidth / 2) * k}px,${height / 2 -
-              (top + docHeight / 2) * k}px)scale(${k})`;
-            this.setState({ transform: translate });
+      <div>
+        {tooltip && (
+          <div
+            style={{
+              position: 'absolute',
+              left: `${tooltip.left}px`,
+              top: `${tooltip.top}px`,
+              zIndex: 1000
+            }}
+            className={cx.tooltip}
+          >
+            <span className={cx.tooltiptext}>{tooltip.doc.title}</span>
+          </div>
+        )}
+        <div
+          style={{
+            transform,
+            transformOrigin: 'left top',
+            transition: '0.5s ease-in-out'
           }}
-        />
+        >
+          <TagMap
+            {...this.props}
+            width={width}
+            height={height}
+            hoverHandler={docOpts => this.setState({ tooltip: docOpts })}
+            zoomHandler={({ top, left, docHeight, docWidth }) => {
+              const k = 8;
+              const translate = `translate(${width / 2 -
+                (left + docWidth / 2) * k}px,${height / 2 -
+                (top + docHeight / 2) * k}px)scale(${k})`;
+              this.setState({ transform: translate });
+            }}
+          />
+        </div>
       </div>
     );
   }
