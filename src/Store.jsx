@@ -97,16 +97,17 @@ const chunkData = (docs, limit = 40) =>
     .sort((a, b) => a.minDate - b.maxDate);
 
 const timelineData = nestByTime(data, d3.timeMonth); // chunkData(data, 40);
+const timelineWeekData = nestByTime(data, d3.timeWeek); // chunkData(data, 40);
 
 const sets = setify(data);
-const tagCloudSets = setify(data).filter(d => d.values.length > 6);
+const tagCloudSets = setify(data).filter(d => d.values.length > 3);
 const setKeys = sets.map(d => d.key);
 
 const tagMapSets = sets.filter(d => d.values.length > 0);
 
 data.forEach((d, i) => {
-  // const overlap = _.intersection(d.tags, setKeys.slice(0, 100));
-  // d.tags = overlap.length === 0 ? ['other'] : overlap;
+  const overlap = _.intersection(d.tags, setKeys.slice(0, 200));
+  d.tags = overlap.length === 0 ? ['other'] : overlap;
   d.id = i;
 });
 
@@ -125,6 +126,7 @@ const defaultState = {
   timelineWidth: 800,
   timelineHeight: 800,
   timelineData,
+  timelineWeekData,
   // },
   // tagCloudConf: {
   tagCloudWidth: 800,

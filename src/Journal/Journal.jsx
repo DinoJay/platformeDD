@@ -10,12 +10,15 @@ import * as chromatic from 'd3-scale-chromatic';
 import cx from './Journal.scss';
 
 import bookIcon from './book.svg';
+import magnifierIcon from './magnifier.svg';
+import mapIcon from './map.svg';
 
 import TagMap from './TagMap';
 import TagCloud from './TagCloud';
 import Timeline from './Timeline';
 
 const themes = [0, 1, 2, 3, 4, 5];
+const colors = ['#d9384a', '#3e6454', '#5a74b0', `#f4b32a`];
 
 // console.log('realData', realData);
 
@@ -37,15 +40,16 @@ class Journal extends React.Component {
   componentDidMount() {
     const { screenResize, processData } = this.props;
     // processData();
+    const cont = ReactDOM.findDOMNode(this.cont);
     screenResize({
-      width: window.innerWidth,
-      height: window.innerHeight
+      width: cont.offsetWidth,
+      height: cont.offsetHeight
     });
 
     window.addEventListener('resize', () => {
       screenResize({
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: ReactDOM.findDOMNode(this.cont).offsetWidth,
+        height: ReactDOM.findDOMNode(this.cont).offsetHeight
       });
     });
   }
@@ -70,21 +74,24 @@ class Journal extends React.Component {
       tagMapSets,
       sets,
       timelineData,
+      timelineWeekData,
       width,
       height
     } = this.props;
 
     const timelineHeight = 100;
     const color = d3
-      .scaleOrdinal()
-      .domain(themes)
-      .range(chromatic.schemeDark2);
+      .scaleSequential()
+      .interpolator(chromatic.interpolateYlGnBu)
+      .domain([1, 15])
+      .clamp(true);
+    // .range(chromatic.schemeBlues[9]);
 
     const maxCols = 4;
     const colDiv = 2;
     const colNum =
       timelineData.length > maxCols ? maxCols : timelineData.length;
-    const colWidth = `${Math.round(1 / colNum * 100) / colDiv}%`;
+    const colWidth = `${Math.round(1 / colNum * (100 - colNum - 6)) / colDiv}%`;
     const rowNum = Math.ceil(timelineData.length / colNum);
     const rowHeight = `${Math.round(1 / rowNum * 100)}%`;
     // console.log(
@@ -98,9 +105,9 @@ class Journal extends React.Component {
     //   rowNum
     // );
     return (
-      <div>
+      <div className="container-fluid">
         <h1>Platforme DD - Articles </h1>
-        <div className="m-3 mb-3">
+        <div ref={cont => (this.cont = cont)} style={{ margin: '20px' }}>
           <div className="row mb-3">
             <fieldset className="col-2">
               <legend>Legend</legend>
@@ -183,9 +190,11 @@ class Journal extends React.Component {
               <Timeline
                 {...this.props}
                 data={timelineData}
+                weekData={timelineWeekData}
                 width={tagCloudWidth}
                 height={timelineHeight}
                 color={color}
+                colorScheme={chromatic.schemeYlGnBu[9]}
               />
             </div>
             <div
@@ -212,19 +221,24 @@ class Journal extends React.Component {
                       height: '100%'
                     }}
                   >
-                    {({ w, h, focus }) => (
-                      <div style={{ overflow: 'hidden' }}>
+                    {({ w, h, mode, markerHandler }) => (
+                      <div
+                        style={{ overflow: 'hidden', marginLeft: `${10}px` }}
+                      >
                         <TagMap
                           data={d.values}
                           links={[]}
                           attr={'tsne'}
-                          docWidth={focus ? 25 : 10}
-                          docHeight={focus ? 25 : 10}
-                          bubbleRadius={focus ? 30 : 15}
+                          docWidth={mode === 1 ? 25 : 13}
+                          docHeight={mode === 1 ? 25 : 13}
+                          bubbleRadius={mode === 1 ? 30 : 15}
                           sets={d.sets}
                           width={w - 10}
                           height={h - 10}
                           color={color}
+                          zoomHandler={() => {
+                            markerHandler();
+                          }}
                           hoverHandler={d => console.log(d)}
                         />
                       </div>
@@ -253,7 +267,7 @@ class GridCell extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.state = { width: 0, height: 0, focus: false };
+    this.state = { width: 0, height: 0, mode: 0 };
   }
 
   componentWillReceiveProps() {
@@ -263,6 +277,8 @@ class GridCell extends React.Component {
     // console.log('element', el.getBoundingClientRect());
     this.setState({ width, height });
   }
+
+  // shouldComponentUpdate() {}
   //
   // componentDidUpdate() {
   //   const el = ReactDOM.findDOMNode(this);
@@ -273,29 +289,49 @@ class GridCell extends React.Component {
   // }
 
   render() {
-    const { width, height, focus } = this.state;
+    const { width, height, mode } = this.state;
     const { style, children, rowSpan, colSpan } = this.props;
+
+    let Icon;
+    switch (mode) {
+      case 0: {
+        Icon = <img src={mapIcon} alt="map" className={cx.mapIcon} />;
+        break;
+      }
+      case 1: {
+        Icon = (
+          <img src={magnifierIcon} alt="magnif" className={cx.magnifierIcon} />
+        );
+        break;
+      }
+      default: {
+        Icon = <img src={bookIcon} alt="book" className={cx.bookIcon} />;
+        break;
+      }
+    }
+
     return (
       <div
         className={cx.cell}
         style={{
           ...style,
-          gridColumnEnd: `span ${focus ? colSpan * 2 : colSpan}`,
-          gridRowEnd: `span ${focus ? rowSpan * 2 : rowSpan}`
+          gridColumnEnd: `span ${mode === 1 ? colSpan * 2 : colSpan}`,
+          gridRowEnd: `span ${mode === 1 ? rowSpan * 2 : rowSpan}`
         }}
       >
         <div
           className={cx.control}
           onClick={() => {
-            this.setState(state => ({ focus: !state.focus }));
+            this.setState(state => ({ mode: state.mode === 0 ? 1 : 0 }));
           }}
         >
-          {<span>{focus ? '+' : '-'}</span>}
+          <span> {Icon} </span>
         </div>
         {children({
-          w: focus ? width * 2 : width,
-          h: focus ? height * 2 : height,
-          focus
+          w: mode === 1 ? width * 2 : width,
+          h: mode === 1 ? height * 2 : height,
+          mode,
+          markerHandler: () => this.setState({ mode: 2 })
         })}
       </div>
     );

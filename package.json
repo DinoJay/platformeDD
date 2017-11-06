@@ -16,6 +16,9 @@
   "license": "MIT",
   "homepage": "https://github.com/alicoding/react-webpack-babel#readme",
   "dependencies": {
+    "@vx/axis": "0.0.146",
+    "@vx/gradient": "0.0.143",
+    "@vx/shape": "0.0.146",
     "bootstrap": "^4.0.0-alpha.3",
     "d3": "^4.10.0",
     "d3-bboxCollide": "^1.0.3",

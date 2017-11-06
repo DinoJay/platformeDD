@@ -1,40 +1,40 @@
 @import "../../styles/variables.scss";
 
 .tag {
-  text-align: center;
-  font-family: Meddon, Serif;
   position: absolute;
+  color: black;
 
-  // background: color,
-  // backgroundOpacity: 0.5,
-  box-shadow: 1px 1px 1px grey;
+  // -webkit-text-fill-color: white;
+  //
+  // /* Will override color (regardless of order)
+  // -webkit-text-stroke-width: 0.5px;
+  // -webkit-text-stroke-color: black;
 
   // span {
-  color: $primBrown;
-  background: white;
-
+  //   display: block;
+  //   z-index: 1000;
   // }
-}
 
-.tag svg {
-  position: absolute;
-  left: 0px;
-  top: 0px;
+  svg {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -100;
 
-  // z-index: -100;
-}
+    // z-index: -100;
 
-.tag :hover {
-  // span {
-  color: white;
-  background: $secBrown;
+  }
 
-  // }
-}
+  .label {
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+  }
 
-.tag span {
-  display: block;
-  vertical-align: middle;
+  div :hover {
+    background: green;
+    cursor: pointer;
+  }
 }
 
 // path {

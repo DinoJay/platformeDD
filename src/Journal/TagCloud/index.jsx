@@ -22,7 +22,7 @@ import cx from './index.scss';
 // }
 const ratio = 4;
 
-function autoSizeText(container, pad = 1, attempts = 200) {
+function autoSizeText(container, attempts = 200) {
   const setChildrenToInheritFontSize = el => {
     el.style.fontSize = 'inherit';
     _.each(el.children, child => {
@@ -40,7 +40,7 @@ function autoSizeText(container, pad = 1, attempts = 200) {
     ) {
       elNewFontSize = '140px'; // largest font to start with
     } else {
-      elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -2)) - pad}px`;
+      elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -1)) - 1}px`;
     }
     el.style.fontSize = elNewFontSize;
 
@@ -83,9 +83,9 @@ class Tag extends React.Component {
   update() {
     // this.componentDidUpdate.bind(this)();
     const { width, height, color, pad } = this.props;
-    const node = ReactDom.findDOMNode(this);
+    const node = ReactDom.findDOMNode(this.span);
     // console.log('node', node);
-    autoSizeText(node, pad);
+    autoSizeText(node);
     d3
       .select(this.svg)
       .selectAll('*')
@@ -97,13 +97,13 @@ class Tag extends React.Component {
         x: 0,
         y: 0,
         width,
-        height: height - pad,
+        height,
         density: 0,
-        sketch: 1
+        sketch: 2
       })
       .selectAll('path')
       .attr('stroke', color)
-      .attr('stroke-width', '2');
+      .attr('stroke-width', 0.4);
   }
 
   render() {
@@ -114,23 +114,41 @@ class Tag extends React.Component {
       height,
       children,
       color,
-      fill,
       pad,
-      onClick
+      onClick,
+      fontColor
     } = this.props;
 
-    // const p = <rect stroke={color} width={width} height={height} />;
-    const st = {
-      left: `${Math.round(left)}px`,
-      top: `${Math.round(top)}px`,
-      width: `${width}px`,
-      height: `${height - pad}px`
-      // border: 'black groove',
-      // borderRadius: '10%',
-    };
     return (
-      <div className={cx.tag} style={st} onClick={() => onClick(children)}>
-        <span style={{ lineHeight: `${height - pad}px` }}>{children}</span>
+      <div
+        className={cx.tag}
+        style={{
+          left: `${Math.round(left)}px`,
+          top: `${Math.round(top)}px`,
+          width: `${width}px`,
+          height: `${height}px`,
+          color: fontColor
+
+          // border: 'black groove',
+          // borderRadius: '10%',
+        }}
+        onClick={() => onClick(children)}
+      >
+        <div className={cx.label}>
+          <div
+            style={{
+              height: '100%',
+              width: '100%',
+              lineHeight: '100%',
+              zIndex: 1000,
+              background: color
+              // margin: '3%'
+            }}
+            ref={span => (this.span = span)}
+          >
+            {children}
+          </div>
+        </div>
         <svg
           ref={svg => (this.svg = svg)}
           style={{
@@ -233,12 +251,17 @@ class TagCloud extends React.Component {
   // }
 
   render() {
-    const { width, height, color, clickHandler } = this.props;
-    console.log('render', this.props, this.state);
+    const { width, height, color, clickHandler, innerPad } = this.props;
     const { data, root } = this.state;
 
     const treemap = root.children.map(d => (
-      <Tag {...d} color={color(d.data.theme)} onClick={clickHandler}>
+      <Tag
+        {...d}
+        height={d.height - innerPad}
+        color={color(d.data.values.length)}
+        onClick={clickHandler}
+        fontColor={d.data.values.length > 4 ? 'white' : 'black'}
+      >
         {d.data.key}
       </Tag>
     ));
@@ -267,6 +290,7 @@ TagCloud.defaultProps = {
   height: 400,
   padX: 0,
   padY: 0,
+  innerPad: 7,
   clickHandler: () => null,
   color: () => 'red',
   getCoords: d => d

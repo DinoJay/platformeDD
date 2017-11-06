@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+
+import { AxisBottom } from '@vx/axis';
+import { AreaClosed } from '@vx/shape';
+import { LinearGradient } from '@vx/gradient';
+
 import cx from './index.scss';
 
 class Timeline extends Component {
@@ -19,48 +24,93 @@ class Timeline extends Component {
   }
 
   render() {
-    const { data, width, height, color, filterTime } = this.props;
+    const {
+      data,
+      width,
+      height,
+      color,
+      colorScheme,
+      filterTime,
+      weekData,
+      axisPad
+    } = this.props;
+
     const timeScale = d3
       .scaleTime()
       .domain([d3.min(data, d => d.minDate), d3.max(data, d => d.maxDate)])
       .range([0, width]);
 
+    const ext = d3.extent(weekData, d => d.values.length);
+    // TODO
+    ext[1] += 10;
+
+    const yScale = d3
+      .scaleLinear()
+      .domain(ext)
+      .range([height, 0]);
+
     return (
       <div>
-        {data.map(s => (
-          <div
-            key={s.key}
-            style={{
-              left: `${timeScale(s.minDate)}px`,
-              width: `${timeScale(s.maxDate) - timeScale(s.minDate)}px`,
-              height: `${height}px`
-            }}
-            className={cx.timeSegment}
-            onClick={() =>
-              filterTime({ minDate: s.minDate, maxDate: s.maxDate })}
-          >
-            {s.values.map((d, j) => {
-              const innerScale = d3
-                .scaleBand()
-                .domain(d3.range(0, s.values.length + 1))
-                .range([0, timeScale(s.maxDate) - timeScale(s.minDate)]);
-              return (
-                <div
-                  key={d.id}
-                  style={{
-                    left: `${innerScale(j)}px`,
-                    width: `${0}px`,
-                    height: `${height}px`,
-                    background: 'black'
-                  }}
+        <div>
+          {data.map(s => (
+            <div
+              key={s.key}
+              style={{
+                left: `${timeScale(s.minDate)}px`,
+                width: `${timeScale(s.maxDate) - timeScale(s.minDate)}px`,
+                height: `${height + 5}px`
+              }}
+              className={cx.timeSegment}
+              onClick={() =>
+                filterTime({ minDate: s.minDate, maxDate: s.maxDate })}
+            />
+          ))}
+        </div>
+        <svg>
+          <AxisBottom
+            scale={timeScale}
+            top={height + axisPad}
+            left={0}
+            stroke={'#1b1a1e'}
+            tickTextFill={'#1b1a1e'}
+          />
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              {colorScheme.map((d, i) => (
+                <stop
+                  offset={`${i / colorScheme.length * 100}% `}
+                  style={{ stopColor: d, stopOpacity: 1 }}
                 />
-              );
-            })}
-          </div>
-        ))}
+              ))}
+            </linearGradient>
+          </defs>
+          <AreaClosed
+            data={weekData}
+            xScale={timeScale}
+            yScale={yScale}
+            x={d => d.maxDate}
+            y={d => d.values.length}
+            fill="url('#gradient')"
+          />
+          <g>
+            {weekData.map(s => (
+              <g>
+                <circle
+                  r={5}
+                  fill={color(s.values.length)}
+                  cx={timeScale(s.maxDate)}
+                  onClick={() => console.log('click', s)}
+                  cy={yScale(s.values.length)}
+                />
+              </g>
+            ))}
+          </g>
+        </svg>
       </div>
     );
   }
 }
+
+Timeline.defaultProps = { axisPad: 10 };
 
 export default Timeline;

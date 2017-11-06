@@ -397,12 +397,19 @@ class TagMap extends Component {
         {({ left, top }) => (
           <div
             key={d.id}
-            onMouseOver={() => hoverHandler({ left, top, doc: d })}
-            onMouseOut={() => hoverHandler(null)}
             style={{
               position: 'absolute',
               left: `${left - docWidth / 2}px`,
-              top: `${top - docHeight / 2}px`
+              top: `${top - docHeight / 2}px`,
+              width: `${docHeight}px`,
+              height: `${docWidth}px`,
+              zIndex: 1000
+            }}
+            onMouseEnter={e => {
+              hoverHandler({ left, top, doc: d });
+            }}
+            onMouseLeave={e => {
+              hoverHandler(null);
             }}
           >
             <div
@@ -412,7 +419,8 @@ class TagMap extends Component {
                 overflow: 'hidden',
                 fontSize: '2px',
                 // opacity: '0.4',
-                border: '.1px solid grey'
+                border: '.1px solid grey',
+                cursor: 'pointer'
               }}
               onClick={() => zoomHandler({ top, left, docWidth, docHeight })}
             >
@@ -436,7 +444,11 @@ class TagMap extends Component {
     ));
 
     const Bubbles = sets.map(s => (
-      <g key={s.id} style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}>
+      <g
+        key={s.id}
+        style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}
+        onMouseOver={() => console.log('key', s.key)}
+      >
         {s.values.map(d => {
           const n = nodes.find(e => e.title === d.title) || { x: 0, y: 0 };
           return (
@@ -449,7 +461,7 @@ class TagMap extends Component {
             >
               {({ left, top }) => (
                 <rect
-                  fill={color(s.key)}
+                  fill={color(s.values.length)}
                   // opacity={0.9}
                   width={bubbleRadius}
                   height={bubbleRadius}
@@ -493,6 +505,23 @@ class TagMap extends Component {
               </filter>
             ))}
             <defs>
+              {sets.map(s => (
+                <filter id={`gooeyCodeFilter2-${s.key}`}>
+                  <feGaussianBlur
+                    in="SourceGraphic"
+                    stdDeviation="10"
+                    colorInterpolationFilters="sRGB"
+                    result="blur"
+                  />
+                  <feColorMatrix
+                    in="blur"
+                    mode="matrix"
+                    values={` 1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${bubbleRadius *
+                      4} -7 `}
+                    result="gooey"
+                  />
+                </filter>
+              ))}
               <marker
                 id="arrow"
                 viewBox="0 -5 10 10"
@@ -559,6 +588,9 @@ class Wrapper extends Component {
   //   this.setState({ width, height });
   // }
 
+  componentDidUpdate() {
+    // this.props.zoomHandler();
+  }
   render() {
     // const { width, height } = this.props;
     const { transform, tooltip } = this.state;
@@ -574,6 +606,9 @@ class Wrapper extends Component {
     //   y = H / 2 - center.y * k;
     // };
     //
+    const { bubbleRadius, zoomHandler } = this.props;
+    const pad = 4;
+    // console.log('tooltip', tooltip && tooltip.doc.tags);
     return (
       <div>
         {tooltip && (
@@ -581,12 +616,22 @@ class Wrapper extends Component {
             style={{
               position: 'absolute',
               left: `${tooltip.left}px`,
-              top: `${tooltip.top}px`,
-              zIndex: 1000
+              top: `${tooltip.top}px`
+              // zIndex: 1000
             }}
-            className={cx.tooltip}
           >
-            <span className={cx.tooltiptext}>{tooltip.doc.title}</span>
+            <div
+              style={{
+                border: '1px solid black',
+                position: 'absolute',
+                width: `${bubbleRadius + pad}px`,
+                height: `${bubbleRadius + pad}px`,
+                borderRadius: '50%',
+                left: `${-(bubbleRadius + pad) / 2}px`,
+                top: `${-(bubbleRadius + pad) / 2}px`
+              }}
+            />
+            <span className={cx.tooltip}> {tooltip.doc.tags.join(',')}</span>
           </div>
         )}
         <div
@@ -607,6 +652,7 @@ class Wrapper extends Component {
                 (left + docWidth / 2) * k}px,${height / 2 -
                 (top + docHeight / 2) * k}px)scale(${k})`;
               this.setState({ transform: translate });
+              // zoomHandler();
             }}
           />
         </div>

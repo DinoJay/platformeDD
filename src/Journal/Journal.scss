@@ -13,7 +13,7 @@ body {
 .grid {
   display: grid;
   height: 100%;
-  grid-gap: 10px;
+  grid-gap: 1%;
 }
 
 .cell {
@@ -26,16 +26,51 @@ body {
     width: 60px;
     height: 60px;
     position: absolute;
-    left: 25px;
+    left: 50px;
     top: -30px;
     background: url(./lined_paper.png) repeat top left fixed;
     z-index: 10;
     border-radius: 50%;
+    z-index: 2000;
+
+    .magnifierIcon {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: 62%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .bookIcon {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .mapIcon {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+    }
 
     span {
       font-size: 60px;
       line-height: 60px;
     }
+  }
+
+  .control :hover {
+    cursor: pointer;
   }
 
   // grid-column-end: span 2;
