@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import tsnejs from 'tsne';
 import _ from 'lodash';
@@ -7,17 +8,110 @@ import ReactDOM from 'react-dom';
 
 // import TSNE from 'tsne-js';
 // import { bboxCollide } from '../utils/helper';
-import cx from './index.scss';
 
 import { bboxCollide } from 'd3-bboxCollide';
 import { forceSurface } from 'd3-force-surface';
 
 import { Motion, spring } from 'react-motion';
 
+import cx from './index.scss';
+
+import offsetInterpolate from './polyOffset';
+
 const jaccard = (a, b) =>
   a.length !== 0 && b.length !== 0
     ? 1 - _.intersection(a, b).length / _.union(a, b).length
     : 1;
+
+const groupPath = function(nodes, offset = 1, docOffset = 12) {
+  let fakePoints = [];
+  nodes.forEach(element => {
+    fakePoints = fakePoints.concat([
+      // "0.7071" scale the sine and cosine of 45 degree for corner points.
+      [element.x, element.y + offset],
+      [element.x + 0.7071 * offset, element.y + 0.7071 * offset],
+      [element.x + offset, element.y],
+      [element.x + 0.7071 * offset, element.y - 0.7071 * offset],
+      [element.x, element.y - offset],
+      [element.x - 0.7071 * offset, element.y - 0.7071 * offset],
+      [element.x - offset, element.y],
+      [element.x - 0.7071 * offset, element.y + 0.7071 * offset]
+    ]);
+  });
+
+  const hull = d3.polygonHull(fakePoints);
+  if (hull === null) return null;
+  return offsetInterpolate(docOffset)(hull.reverse());
+};
+
+const fakePoints = function(nodes, offset = 1, docOffset = 12) {
+  let fakePoints = [];
+  nodes.forEach(element => {
+    fakePoints = fakePoints.concat([
+      // "0.7071" scale the sine and cosine of 45 degree for corner points.
+      [element.x, element.y + offset],
+      [element.x + 0.7071 * offset, element.y + 0.7071 * offset],
+      [element.x + offset, element.y],
+      [element.x + 0.7071 * offset, element.y - 0.7071 * offset],
+      [element.x, element.y - offset],
+      [element.x - 0.7071 * offset, element.y - 0.7071 * offset],
+      [element.x - offset, element.y],
+      [element.x - 0.7071 * offset, element.y + 0.7071 * offset]
+    ]);
+  });
+  return fakePoints;
+};
+
+// const SetHull = class SetHull extends Component {
+//   static propTypes = {
+//     data: PropTypes.array,
+//     size: PropTypes.number,
+//     zoomHandler: PropTypes.func
+//   };
+//
+//   constructor(props) {
+//     super(props);
+//     this.state = { w: 0, h: 0, cx: 0, cy: 0 };
+//   }
+//
+//   componentDidMount() {
+//     const { width, height, x, y } = ReactDOM.findDOMNode(this).getBBox();
+//
+//     // console.log('bbox', ReactDOM.findDOMNode(this).getBBox());
+//     const cx = x + width / 2;
+//     const cy = y + height / 2;
+//     // const cx = (x + x + width) / 2;
+//     // const cy = (y + y + height) / 2;
+//     this.setState({ w: width, h: height, cx, cy });
+//   }
+//
+//   render() {
+//     const { data, size, zoomHandler } = this.props;
+//     const { width, height, cx, cy } = this.state;
+//     return (
+//       <g>
+//         <path
+//           fill="white"
+//           opacity={0.1}
+//           d={groupPath(data, 1, size)}
+//           stroke="black"
+//           strokeWidth="1"
+//           strokeLinecap="round"
+//           onMouseOver={() => console.log('yeah')}
+//           onClick={() => {
+//             console.log('click');
+//             zoomHandler({
+//               left: cx,
+//               top: cy,
+//               docWidth: size,
+//               docHeight: size
+//             });
+//           }}
+//         />
+//       </g>
+//     );
+//   }
+// };
 
 function runTsne(nodes, links, dists, bbox, docHeight) {
   const width = bbox[1].to.x - bbox[0].from.x;
@@ -130,10 +224,10 @@ function runCluster(nodes, links, themeGraph, width, height) {
 
   return resNodes;
 
-  // console.log(
+  // console.log(;;
   //   'mappedCl',
   //   d3
-  //     .nest()
+  //     .nest();
   //     .key(d => d.id)
   //     .entries(mappedCl)
   // );
@@ -443,40 +537,54 @@ class TagMap extends Component {
       </Motion>
     ));
 
+    // const SetHulls = sets.map(s => (
+    //   <path
+    //     fill="none"
+    //     d={groupPath(s.values, 1, docHeight)}
+    //     stroke="black"
+    //     strokeWidth="1"
+    //     strokeLinecap="round"
+    //     onMouseOver={() => console.log('yeah')}
+    //     onClick={() => zoomHandler({ top, left, docWidth, docHeight })}
+    //   />
+    // ));
+
     const Bubbles = sets.map(s => (
-      <g
-        key={s.id}
-        style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}
-        onMouseOver={() => console.log('key', s.key)}
-      >
-        {s.values.map(d => {
-          const n = nodes.find(e => e.title === d.title) || { x: 0, y: 0 };
-          return (
-            <Motion
-              defaultStyle={{ left: width / 2, top: height / 2 }}
-              style={{
-                left: spring(n.x),
-                top: spring(n.y)
-              }}
-            >
-              {({ left, top }) => (
-                <rect
-                  fill={color(s.values.length)}
-                  // opacity={0.9}
-                  width={bubbleRadius}
-                  height={bubbleRadius}
-                  x={left - docHeight / 2}
-                  y={top - docHeight / 2}
-                />
-              )}
-            </Motion>
-          );
-        })}
+      <g>
+        <g
+          key={s.id}
+          style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}
+          onMouseOver={() => console.log('key', s.key)}
+        >
+          {s.values.map(d => {
+            const n = nodes.find(e => e.title === d.title) || { x: 0, y: 0 };
+            return (
+              <Motion
+                defaultStyle={{ left: width / 2, top: height / 2 }}
+                style={{
+                  left: spring(n.x),
+                  top: spring(n.y)
+                }}
+              >
+                {({ left, top }) => (
+                  <rect
+                    fill={color(s.values.length)}
+                    // opacity={0.9}
+                    width={bubbleRadius}
+                    height={bubbleRadius}
+                    x={left - docHeight / 2}
+                    y={top - docHeight / 2}
+                  />
+                )}
+              </Motion>
+            );
+          })}
+        </g>
       </g>
     ));
 
     const svgStyle = {
-      pointerEvents: 'none',
+      // pointerEvents: 'none',
       width: '100%',
       height: '100%',
       position: 'absolute',
@@ -535,6 +643,29 @@ class TagMap extends Component {
               </marker>
             </defs>
           </defs>
+          <g>
+            {sets.map(s => (
+              <g>
+                <path
+                  className={cx.hull}
+                  fill="white"
+                  opacity={0}
+                  d={groupPath(s.values, 1, docHeight)}
+                  onMouseOver={() => console.log('yeah')}
+                  onClick={() => {
+                    const hull = d3.polygonHull(fakePoints(s.values));
+                    const center = d3.polygonCentroid(hull);
+                    zoomHandler({
+                      left: center[0],
+                      top: center[1],
+                      docWidth: d3.polygonLength(hull),
+                      docHeight: d3.polygonLength(hull)
+                    });
+                  }}
+                />
+              </g>
+            ))}
+          </g>
           <g>{Bubbles}</g>
         </svg>
         <div
@@ -647,10 +778,11 @@ class Wrapper extends Component {
             height={height}
             hoverHandler={docOpts => this.setState({ tooltip: docOpts })}
             zoomHandler={({ top, left, docHeight, docWidth }) => {
-              const k = 8;
+              // const k = 8;
+              const scale = 3;
+              // 0.9 / Math.max(docWidth / width, docHeight / height);
               const translate = `translate(${width / 2 -
-                (left + docWidth / 2) * k}px,${height / 2 -
-                (top + docHeight / 2) * k}px)scale(${k})`;
+                left * scale}px,${height / 2 - top * scale}px)scale(${scale})`;
               this.setState({ transform: translate });
               // zoomHandler();
             }}

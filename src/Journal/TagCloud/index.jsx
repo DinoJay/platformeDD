@@ -2,7 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 // import tsnejs from 'tsne';
 import _ from 'lodash';
-
+import * as chroma from 'chroma-js';
 import ReactDom from 'react-dom';
 import sketchy from '../utils/d3.sketchy';
 
@@ -141,7 +141,9 @@ class Tag extends React.Component {
               width: '100%',
               lineHeight: '100%',
               zIndex: 1000,
-              background: color
+              background: chroma(color)
+                .alpha(0.7)
+                .css()
               // margin: '3%'
             }}
             ref={span => (this.span = span)}
@@ -169,7 +171,6 @@ Tag.defaultProps = {
   height: 0,
   children: 0,
   color: 'blue',
-  fill: 'white',
   clickHandler: () => null
 };
 

@@ -65,7 +65,7 @@ function prepareData() {
 
 const data = prepareData().slice(0, 1000);
 const tagMapData = data.slice(0, 1000);
-const nestByTime = (docs, d3time = d3.timeMonth, minSetSize = 2) =>
+const nestByTime = (docs, d3time = d3.timeMonth, minSetSize = 2, maxVal = 8) =>
   d3
     .nest()
     .key(d => d3time(d.date))
@@ -77,6 +77,15 @@ const nestByTime = (docs, d3time = d3.timeMonth, minSetSize = 2) =>
       d.sets = setify(d.values).filter(e => e.values.length > minSetSize);
       return d;
     })
+    .sort((a, b) => b.values.length - a.values.length)
+    .reduce((acc, d) => {
+      if (d.values.length > maxVal) return acc.concat([d]);
+      const last = acc[acc.length - 1];
+      last.values = last.values.concat(d.values);
+      last.minDate = d3.min(last.values, e => e.date);
+      last.maxDate = d3.max(last.values, e => e.date);
+      return acc;
+    }, [])
     .sort((a, b) => a.minDate - b.minDate);
 
 const chunkData = (docs, limit = 40) =>
@@ -97,7 +106,7 @@ const chunkData = (docs, limit = 40) =>
     .sort((a, b) => a.minDate - b.maxDate);
 
 const timelineData = nestByTime(data, d3.timeMonth); // chunkData(data, 40);
-const timelineWeekData = nestByTime(data, d3.timeWeek); // chunkData(data, 40);
+const timelineWeekData = nestByTime(data, d3.timeWeek, 1, 0); // chunkData(data, 40);
 
 const sets = setify(data);
 const tagCloudSets = setify(data).filter(d => d.values.length > 3);

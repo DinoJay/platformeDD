@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
+import * as chroma from 'chroma-js';
 
 import { AxisBottom } from '@vx/axis';
 import { AreaClosed } from '@vx/shape';
@@ -79,7 +80,12 @@ class Timeline extends Component {
               {colorScheme.map((d, i) => (
                 <stop
                   offset={`${i / colorScheme.length * 100}% `}
-                  style={{ stopColor: d, stopOpacity: 1 }}
+                  style={{
+                    stopColor: chroma(d)
+                      .alpha(0.7)
+                      .css(),
+                    stopOpacity: 1
+                  }}
                 />
               ))}
             </linearGradient>

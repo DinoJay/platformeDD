@@ -89,24 +89,24 @@ class Journal extends React.Component {
 
     const maxCols = 4;
     const colDiv = 2;
-    const colNum =
-      timelineData.length > maxCols ? maxCols : timelineData.length;
+    const colNum = 8;
+    // timelineData.length > maxCols ? maxCols : timelineData.length;
     const colWidth = `${Math.round(1 / colNum * (100 - colNum - 6)) / colDiv}%`;
-    const rowNum = Math.ceil(timelineData.length / colNum);
+    const rowNum = 2; // Math.ceil(timelineData.length / colNum);
     const rowHeight = `${Math.round(1 / rowNum * 100)}%`;
-    // console.log(
-    //   'colWidth',
-    //   colWidth,
-    //   'colNum',
-    //   colNum,
-    //   'rowHeight',
-    //   rowHeight,
-    //   'rowNum',
-    //   rowNum
-    // );
+    console.log(
+      'colWidth',
+      colWidth,
+      'colNum',
+      colNum,
+      'rowHeight',
+      rowHeight,
+      'rowNum',
+      rowNum
+    );
     return (
       <div className="container-fluid">
-        <h1>Platforme DD - Articles </h1>
+        <h1>Bookmark Tag Visualization</h1>
         <div ref={cont => (this.cont = cont)} style={{ margin: '20px' }}>
           <div className="row mb-3">
             <fieldset className="col-2">
@@ -120,40 +120,6 @@ class Journal extends React.Component {
                     {c}
                   </div>
                 ))}
-              </div>
-            </fieldset>
-            <fieldset className="col-3">
-              <legend>Layout</legend>
-              <div className="form-check">
-                <label className="form-check-label">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="exampleRadios"
-                    id="cola"
-                    value="option1"
-                    onClick={() =>
-                      this.setState(oldState => ({
-                        clicked: !oldState.clicked
-                      }))}
-                  />
-                  bottom down links
-                </label>
-              </div>
-              <div className="form-check ">
-                <label className="form-check-label">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="exampleRadios"
-                    id="exampleRadios2"
-                    onClick={() =>
-                      this.setState(oldState => ({
-                        clicked: !oldState.clicked
-                      }))}
-                  />
-                  themes
-                </label>
               </div>
             </fieldset>
           </div>
@@ -215,11 +181,8 @@ class Journal extends React.Component {
                   <GridCell
                     i={i % colNum}
                     j={Math.floor(i / colNum)}
-                    colSpan={d.values.length > 15 ? 2 : 1}
-                    rowSpan={d.values.length > 15 ? 2 : 1}
-                    style={{
-                      height: '100%'
-                    }}
+                    colSpan={3}
+                    rowSpan={1}
                   >
                     {({ w, h, mode, markerHandler }) => (
                       <div
@@ -315,7 +278,7 @@ class GridCell extends React.Component {
         className={cx.cell}
         style={{
           ...style,
-          gridColumnEnd: `span ${mode === 1 ? colSpan * 2 : colSpan}`,
+          gridColumnEnd: `span ${mode === 1 ? colSpan * 3 : colSpan}`,
           gridRowEnd: `span ${mode === 1 ? rowSpan * 2 : rowSpan}`
         }}
       >
@@ -328,7 +291,7 @@ class GridCell extends React.Component {
           <span> {Icon} </span>
         </div>
         {children({
-          w: mode === 1 ? width * 2 : width,
+          w: mode === 1 ? width * 3 : width,
           h: mode === 1 ? height * 2 : height,
           mode,
           markerHandler: () => this.setState({ mode: 2 })

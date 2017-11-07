@@ -43,9 +43,9 @@ function reducer(state = {}, action) {
       const h = height / 2;
       const newDim = {
         tagCloudWidth: width,
-        tagCloudHeight: h / 2,
-        tagMapWidth: width / 1.5,
-        tagMapHeight: h,
+        tagCloudHeight: h / 3,
+        tagMapWidth: width,
+        tagMapHeight: h / (3 / 2),
         width,
         height
       };
