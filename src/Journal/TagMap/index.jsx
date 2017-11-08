@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import tsnejs from 'tsne';
+
+import TSNE from 'tsne-js';
 import _ from 'lodash';
 import cola from 'webcola';
 import ReactDOM from 'react-dom';
@@ -113,11 +115,9 @@ const fakePoints = function(nodes, offset = 1, docOffset = 12) {
 //   }
 // };
 
-function runTsne(nodes, links, dists, bbox, docHeight) {
+function runTsne(nodes, dists, bbox) {
   const width = bbox[1].to.x - bbox[0].from.x;
   const height = bbox[1].to.y - bbox[0].from.y;
-  const centerx = d3.scaleLinear().range([bbox[0].from.x, bbox[1].to.x]);
-  const centery = d3.scaleLinear().range([bbox[0].from.y, bbox[1].to.y]);
 
   const model = new tsnejs.tSNE({
     dim: 2,
@@ -127,48 +127,25 @@ function runTsne(nodes, links, dists, bbox, docHeight) {
 
   // initialize data with pairwise distances
   model.initDataDist(dists);
-  const forcetsne = d3
-    .forceSimulation(nodes)
-    // .alphaDecay(0.01)
-    // .alpha(0.3)
-    .force('tsne', alpha => {
-      // every time you call this, solution gets better
-      model.step();
 
-      // Y is an array of 2-D points that you can plot
-      const pos = model.getSolution();
+  for (let i = 0; i < 300; ++i) model.step();
 
-      centerx.domain(d3.extent(pos.map(d => d[0])));
-      centery.domain(d3.extent(pos.map(d => d[1])));
+  // Y is an array of 2-D points that you can plot
+  const pos = model.getSolution();
 
-      const strength = 1;
-      forcetsne.nodes().forEach((d, i) => {
-        d.x += alpha * strength * (centerx(pos[i][0]) - d.x);
-        d.y += alpha * strength * (centery(pos[i][1]) - d.y);
-      });
-    })
-    .force(
-      'container',
-      forceSurface()
-        .elasticity(0)
-        .surfaces(bbox)
-        .oneWay(true)
-        .radius(docHeight)
-    )
-    .stop();
-
-  for (let i = 0; i < 300; ++i) forcetsne.tick();
+  // const strength = 1;
+  nodes.forEach((d, i) => {
+    d.pos = pos[i];
+  });
 
   return nodes.map(d => {
-    // TODO: rename
     d.tsne = {
-      x: d.x, // centerx(pos[i][0]),
-      y: d.y // centery(pos[i][1]) // d.y
+      x: 0, // centerx(pos[i][0]),
+      y: 0, // centery(pos[i][1]) // d.y
+      pos: d.pos
     };
     d.x = width / 2;
     d.y = height / 2;
-    // TODO: init positions
-
     return d;
   });
 }
@@ -335,40 +312,13 @@ class TagMap extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      dists: [],
-      bbox: [],
-      nodes: []
-    };
-
-    this.state = this.compNewState(props);
-  }
-
-  compNewState(props) {
-    const {
-      data,
-      links,
-      width,
-      height,
-      docWidth,
-      docHeight,
-      sets,
-      // themeGraph,
-      attr
-    } = props;
-
-    // TODO: fix later
-    if (data.length === 0) {
-      return {
-        dists: [],
-        bbox: [],
-        nodes: []
-      };
-    }
+    const { data, sets, width, height, docWidth, docHeight } = props;
 
     const padDocX = 10;
     const padDocY = 10;
-    const nodes = data.map(d => {
+    const padX = 0; // docWidth / 2;
+    const padY = 0; // docHeight / 2;
+    const inputData = data.map(d => {
       d.width = docWidth + padDocX;
       d.height = docHeight + padDocY;
       d.x = width / 2;
@@ -379,8 +329,6 @@ class TagMap extends Component {
       return d;
     });
 
-    const padX = 0; // docWidth / 2;
-    const padY = 0; // docHeight / 2;
     const bbox = [
       {
         from: { x: padX, y: padY },
@@ -400,68 +348,246 @@ class TagMap extends Component {
       }
     ];
 
-    const dists = data.map(a => data.map(b => jaccard(a.tags, b.tags)));
-
-    // const newNodes = runColaForce(nodes, links, width, height);
-    const nextNodes = runTsne(nodes, links, dists, bbox, docHeight);
-
-    // const nextNextNodes = runCluster(
-    //   nextNodes,
-    //   links,
-    //   themeGraph,
-    //   width,
-    //   height
-    // );
-
-    const pad = 5;
-    const sim = d3
-      .forceSimulation(nextNodes)
-      .force(
-        'link',
-        d3
-          .forceLink(links)
-          .distance(200)
-          .strength(1)
-      )
-      .force(
-        'collide',
-        d3
-          .forceCollide()
-          .radius(docHeight / 2 + pad)
-          .strength(0.1)
-      )
-      // .force('charge', d3.forceManyBody())
-      // .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('X', d3.forceX(d => d[attr].x).strength(1))
-      .force('Y', d3.forceY(d => d[attr].y).strength(1))
-      .force(
-        'container',
-        forceSurface()
-          .elasticity(0)
-          .surfaces(bbox)
-          .oneWay(true)
-          .radius(docHeight)
-      )
-      .stop();
-    // .strength(0.01)
-    // .on('end', () => {
-    //   this.setState({ nodes: sim.nodes() });
+    const dists = inputData.map(a => data.map(b => jaccard(a.tags, b.tags)));
+    // const nodes = runTsne(inputData, dists, bbox, docHeight);
+    // const model = new TSNE({
+    //   dim: 2,
+    //   perplexity: 30.0,
+    //   earlyExaggeration: 4.0,
+    //   learningRate: 100.0,
+    //   nIter: 500,
+    //   metric: 'dice'
     // });
+    //
+    // // inputData is a nested array which can be converted into an ndarray
+    // // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
+    // model.init({
+    //   data: dists,
+    //   type: 'dense'
+    // });
+    //
+    // // `error`,  `iter`: final error and iteration number
+    // // note: computation-heavy action happens here
+    // const [run, iter] = model.run();
+    // console.log('error', run, iter);
+    // const output = model.getOutput();
+    //
+    // const nodes = inputData.map((d, i) => {
+    //   d.tsne = { pos: output[i], x: 0, y: 0 };
+    //   return d;
+    // });
+    // console.log('output', output);
 
-    for (let i = 0; i < 320; ++i) sim.tick();
-    return {
-      dists,
-      bbox,
-      nodes: sim.nodes()
-    };
+    const model = new tsnejs.tSNE({
+      dim: 2,
+      perplexity: 50,
+      epsilon: 20
+    });
+
+    // initialize data with pairwise distances
+    model.initDataDist(dists);
+
+    for (let i = 0; i < 400; ++i) model.step();
+
+    // Y is an array of 2-D points that you can plot
+    const output = model.getSolution();
+
+    // const strength = 1;
+    const nodes = inputData.map((d, i) => {
+      d.tsne = {
+        pos: output[i]
+      };
+      d.x = width / 2;
+      d.y = height / 2;
+      return d;
+    });
+
+    nodes.map(d => d);
+
+    this.state = { nodes, bbox };
+
+    // bbox,
+    // nodes: sim.nodes()
   }
 
+  // compNewState(props) {
+  //   const {
+  //     data,
+  //     links,
+  //     width,
+  //     height,
+  //     docWidth,
+  //     docHeight,
+  //     sets,
+  //     // themeGraph,
+  //     attr
+  //   } = props;
+  //
+  //   // TODO: fix later
+  //   if (data.length === 0) {
+  //     return {
+  //       dists: [],
+  //       bbox: [],
+  //       nodes: []
+  //     };
+  //   }
+  //
+  //   const padDocX = 10;
+  //   const padDocY = 10;
+  //
+  //   const padX = 0; // docWidth / 2;
+  //   const padY = 0; // docHeight / 2;
+  //   const bbox = [
+  //     {
+  //       from: { x: padX, y: padY },
+  //       to: { x: padX, y: height - padY }
+  //     },
+  //     {
+  //       from: { x: padX, y: height - padY },
+  //       to: { x: width - padX, y: height - padY }
+  //     },
+  //     {
+  //       from: { x: width - padX, y: height - padY },
+  //       to: { x: width - padX, y: padY }
+  //     },
+  //     {
+  //       from: { x: width - padX, y: padY },
+  //       to: { x: padX, y: padY }
+  //     }
+  //   ];
+  //
+  //   const dists = data.map(a => data.map(b => jaccard(a.tags, b.tags)));
+  //
+  //   // const newNodes = runColaForce(nodes, links, width, height);
+  //   const nextNodes = runTsne(nodes, links, dists, bbox, docHeight);
+  //
+  //   // const nextNextNodes = runCluster(
+  //   //   nextNodes,
+  //   //   links,
+  //   //   themeGraph,
+  //   //   width,
+  //   //   height
+  //   // );
+  //
+  //   const pad = 5;
+  //   const sim = d3
+  //     .forceSimulation(nextNodes)
+  //     .force(
+  //       'link',
+  //       d3
+  //         .forceLink(links)
+  //         .distance(200)
+  //         .strength(1)
+  //     )
+  //     .force(
+  //       'collide',
+  //       d3
+  //         .forceCollide()
+  //         .radius(docHeight / 2 + pad)
+  //         .strength(0.1)
+  //     )
+  //     // .force('charge', d3.forceManyBody())
+  //     // .force('center', d3.forceCenter(width / 2, height / 2))
+  //     .force('X', d3.forceX(d => d[attr].x).strength(1))
+  //     .force('Y', d3.forceY(d => d[attr].y).strength(1))
+  //     .force(
+  //       'container',
+  //       forceSurface()
+  //         .elasticity(0)
+  //         .surfaces(bbox)
+  //         .oneWay(true)
+  //         .radius(docHeight)
+  //     )
+  //     .stop();
+  //   // .strength(0.01)
+  //   // .on('end', () => {
+  //   //   this.setState({ nodes: sim.nodes() });
+  //   // });
+  //
+  //   for (let i = 0; i < 320; ++i) sim.tick();
+  //   return {
+  //     dists,
+  //     bbox,
+  //     nodes: sim.nodes()
+  //   };
+  // }
   componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.height !== this.props.height ||
-      nextProps.data.length !== this.props.data.length
-    )
-      this.setState(this.compNewState(nextProps));
+    const { height, width, data, docHeight } = nextProps;
+    const { nodes } = this.state;
+    // TODO: make real check
+    // const oldWidth = this.props.width;
+    const oldHeight = this.props.height;
+
+    if (height !== oldHeight || data.length !== this.props.data.length) {
+      const padX = 0; // docWidth / 2;
+      const padY = 0; // docHeight / 2;
+      const bbox = [
+        {
+          from: { x: padX, y: padY },
+          to: { x: padX, y: height - padY }
+        },
+        {
+          from: { x: padX, y: height - padY },
+          to: { x: width - padX, y: height - padY }
+        },
+        {
+          from: { x: width - padX, y: height - padY },
+          to: { x: width - padX, y: padY }
+        },
+        {
+          from: { x: width - padX, y: padY },
+          to: { x: padX, y: padY }
+        }
+      ];
+
+      // const w = bbox[1].to.x - bbox[0].from.x;
+      // const h = bbox[1].to.y - bbox[0].from.y;
+      const centerx = d3.scaleLinear().range([bbox[0].from.x, bbox[1].to.x]);
+      const centery = d3.scaleLinear().range([bbox[0].from.y, bbox[1].to.y]);
+      const pos = nodes.map(d => d.tsne.pos);
+      centerx.domain(d3.extent(pos.map(d => d[0])));
+      centery.domain(d3.extent(pos.map(d => d[1])));
+
+      const nextNodes = nodes.map((d, i) => {
+        d.tx = centerx(pos[i][0]);
+        d.ty = centery(pos[i][1]);
+        return d;
+      });
+
+      const pad = 5;
+      const sim = d3
+        .forceSimulation(nextNodes)
+        // .force(
+        //   'link',
+        //   d3
+        //     .forceLink([])
+        //     .distance(200)
+        //     .strength(1)
+        // )
+        .force(
+          'collide',
+          d3
+            .forceCollide()
+            .radius(docHeight / 2 + pad)
+            .strength(0.1)
+        )
+        // .force('charge', d3.forceManyBody())
+        // .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('X', d3.forceX(d => d.tx).strength(1))
+        .force('Y', d3.forceY(d => d.ty).strength(1))
+        .force(
+          'container',
+          forceSurface()
+            .elasticity(0)
+            .surfaces(bbox)
+            .oneWay(true)
+            .radius(docHeight)
+        );
+
+      for (let i = 0; i < 320; ++i) sim.tick();
+
+      this.setState({ nodes: nextNodes, bbox });
+    }
   }
 
   render() {
@@ -550,36 +676,34 @@ class TagMap extends Component {
     // ));
 
     const Bubbles = sets.map(s => (
-      <g>
-        <g
-          key={s.id}
-          style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}
-          onMouseOver={() => console.log('key', s.key)}
-        >
-          {s.values.map(d => {
-            const n = nodes.find(e => e.title === d.title) || { x: 0, y: 0 };
-            return (
-              <Motion
-                defaultStyle={{ left: width / 2, top: height / 2 }}
-                style={{
-                  left: spring(n.x),
-                  top: spring(n.y)
-                }}
-              >
-                {({ left, top }) => (
-                  <rect
-                    fill={color(s.values.length)}
-                    // opacity={0.9}
-                    width={bubbleRadius}
-                    height={bubbleRadius}
-                    x={left - docHeight / 2}
-                    y={top - docHeight / 2}
-                  />
-                )}
-              </Motion>
-            );
-          })}
-        </g>
+      <g
+        key={s.id}
+        style={{ filter: `url( "#gooeyCodeFilter-${s.key}")` }}
+        onMouseOver={() => console.log('key', s.key)}
+      >
+        {s.values.map(d => {
+          const n = nodes.find(e => e.title === d.title) || { x: 0, y: 0 };
+          return (
+            <Motion
+              defaultStyle={{ left: width / 2, top: height / 2 }}
+              style={{
+                left: spring(n.x),
+                top: spring(n.y)
+              }}
+            >
+              {({ left, top }) => (
+                <rect
+                  fill={color(s.values.length)}
+                  // opacity={0.9}
+                  width={bubbleRadius}
+                  height={bubbleRadius}
+                  x={left - docHeight / 2}
+                  y={top - docHeight / 2}
+                />
+              )}
+            </Motion>
+          );
+        })}
       </g>
     ));
 
@@ -649,7 +773,7 @@ class TagMap extends Component {
                 <path
                   className={cx.hull}
                   fill="white"
-                  opacity={0}
+                  opacity={1}
                   d={groupPath(s.values, 1, docHeight)}
                   onMouseOver={() => console.log('yeah')}
                   onClick={() => {

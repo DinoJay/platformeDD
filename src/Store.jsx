@@ -109,7 +109,9 @@ const timelineData = nestByTime(data, d3.timeMonth); // chunkData(data, 40);
 const timelineWeekData = nestByTime(data, d3.timeWeek, 1, 0); // chunkData(data, 40);
 
 const sets = setify(data);
-const tagCloudSets = setify(data).filter(d => d.values.length > 3);
+const tagCloudSets = setify(data)
+  .filter(d => d.values.length > 3)
+  .slice(0, 50);
 const setKeys = sets.map(d => d.key);
 
 const tagMapSets = sets.filter(d => d.values.length > 0);

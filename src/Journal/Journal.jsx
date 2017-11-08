@@ -87,9 +87,11 @@ class Journal extends React.Component {
       .clamp(true);
     // .range(chromatic.schemeBlues[9]);
 
+    const cellNum = 4;
     const maxCols = 4;
     const colDiv = 2;
-    const colNum = 8;
+
+    const colNum = cellNum * 2;
     // timelineData.length > maxCols ? maxCols : timelineData.length;
     const colWidth = `${Math.round(1 / colNum * (100 - colNum - 6)) / colDiv}%`;
     const rowNum = 2; // Math.ceil(timelineData.length / colNum);
@@ -108,21 +110,6 @@ class Journal extends React.Component {
       <div className="container-fluid">
         <h1>Bookmark Tag Visualization</h1>
         <div ref={cont => (this.cont = cont)} style={{ margin: '20px' }}>
-          <div className="row mb-3">
-            <fieldset className="col-2">
-              <legend>Legend</legend>
-              <div className="row no-gutters">
-                {themes.map(c => (
-                  <div
-                    style={{ background: color(c), width: '200%' }}
-                    className="col success"
-                  >
-                    {c}
-                  </div>
-                ))}
-              </div>
-            </fieldset>
-          </div>
           <div>
             <svg
               style={{
@@ -181,8 +168,10 @@ class Journal extends React.Component {
                   <GridCell
                     i={i % colNum}
                     j={Math.floor(i / colNum)}
-                    colSpan={3}
+                    colSpan={4}
                     rowSpan={1}
+                    activeColSpan={6}
+                    activeRowSpan={2}
                   >
                     {({ w, h, mode, markerHandler }) => (
                       <div
@@ -225,7 +214,9 @@ class GridCell extends React.Component {
       i: PropTypes.number.isRequired,
       j: PropTypes.number.isRequired,
       colSpan: PropTypes.number.isRequired,
-      rowSpan: PropTypes.number.isRequired
+      rowSpan: PropTypes.number.isRequired,
+      activeColSpan: PropTypes.number.isRequired,
+      activeRowSpan: PropTypes.number.isRequired
     };
   }
   constructor(props) {
@@ -248,12 +239,22 @@ class GridCell extends React.Component {
   //   const width = el.offsetWidth;
   //   const height = el.offsetHeight;
   //   console.log('element', el.getBoundingClientRect());
-  //   // this.setState({ width, height });
+  //   this.setState({ width, height });
   // }
 
   render() {
     const { width, height, mode } = this.state;
-    const { style, children, rowSpan, colSpan } = this.props;
+    const {
+      style,
+      children,
+      rowSpan,
+      activeRowSpan,
+      colSpan,
+      activeColSpan
+    } = this.props;
+
+    const activeColWidth = width / colSpan * activeColSpan;
+    const activeRowHeight = height / rowSpan * activeRowSpan;
 
     let Icon;
     switch (mode) {
@@ -278,8 +279,8 @@ class GridCell extends React.Component {
         className={cx.cell}
         style={{
           ...style,
-          gridColumnEnd: `span ${mode === 1 ? colSpan * 3 : colSpan}`,
-          gridRowEnd: `span ${mode === 1 ? rowSpan * 2 : rowSpan}`
+          gridColumnEnd: `span ${mode === 1 ? activeColSpan : colSpan}`,
+          gridRowEnd: `span ${mode === 1 ? activeRowSpan : rowSpan}`
         }}
       >
         <div
@@ -291,8 +292,8 @@ class GridCell extends React.Component {
           <span> {Icon} </span>
         </div>
         {children({
-          w: mode === 1 ? width * 3 : width,
-          h: mode === 1 ? height * 2 : height,
+          w: mode === 1 ? activeColWidth : width,
+          h: mode === 1 ? activeRowHeight : height,
           mode,
           markerHandler: () => this.setState({ mode: 2 })
         })}

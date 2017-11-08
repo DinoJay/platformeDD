@@ -36,16 +36,17 @@ function setify(data) {
 
 function reducer(state = {}, action) {
   console.log('action', action);
+  // TODO: optimize later
   switch (action.type) {
     case SCREEN_RESIZE: {
       const { payload } = action;
       const { width, height } = payload;
-      const h = height / 2;
+      const h = height;
       const newDim = {
         tagCloudWidth: width,
-        tagCloudHeight: h / 3,
+        tagCloudHeight: h / 4,
         tagMapWidth: width,
-        tagMapHeight: h / (3 / 2),
+        tagMapHeight: h / 2.5,
         width,
         height
       };
