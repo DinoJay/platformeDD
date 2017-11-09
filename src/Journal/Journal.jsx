@@ -129,7 +129,7 @@ class Journal extends React.Component {
               <TagCloud
                 data={tagCloudSets}
                 width={tagCloudWidth}
-                height={tagCloudHeight}
+                height={250}
                 color={color}
               />
             </div>
@@ -174,9 +174,7 @@ class Journal extends React.Component {
                     activeRowSpan={2}
                   >
                     {({ w, h, mode, markerHandler }) => (
-                      <div
-                        style={{ overflow: 'hidden', marginLeft: `${10}px` }}
-                      >
+                      <div style={{ overflow: 'hidden' }}>
                         <TagMap
                           data={d.values}
                           links={[]}
@@ -189,7 +187,7 @@ class Journal extends React.Component {
                           height={h - 10}
                           color={color}
                           zoomHandler={() => {
-                            markerHandler();
+                            // markerHandler();
                           }}
                           hoverHandler={d => console.log(d)}
                         />
